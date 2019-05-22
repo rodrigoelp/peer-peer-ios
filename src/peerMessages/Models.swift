@@ -5,16 +5,29 @@ enum MessageDirection {
     case outgoing
 }
 
-struct Message {
+protocol Message {
+    var description: String { get }
+}
+
+struct SystemMessage: Message {
+    let description: String
+    
+    init(description: String) {
+        self.description = description
+    }
+}
+
+struct TextMessage: Message {
     let time: Date
     let content: String
     let direction: MessageDirection
     private let dateFormatter = DateFormatter()
     
-    var description: String { get {
-        let prefix = direction == .incoming ? "🔻" : "🔺"
-        let printedDate = self.dateFormatter.string(from: self.time)
-        return "\(prefix) [\(printedDate)]: \(self.content)"
+    var description: String {
+        get {
+            let prefix = direction == .incoming ? "🔻" : "🔺"
+            let printedDate = self.dateFormatter.string(from: self.time)
+            return "\(prefix) [\(printedDate)]: \(self.content)"
         }
     }
     

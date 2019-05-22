@@ -43,7 +43,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         guard let message = messageText.text, !message.isEmpty else {
             return
         }
-        let msg = Message(outgoing: message)
+        let msg = TextMessage(outgoing: message)
         store(msg)
         post(msg)
         updateMessages()
@@ -51,11 +51,26 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         enableMessageControls(session.connectedPeers.count > 0)
+        
+        let msg: Message?
+        switch state {
+        case .connecting:
+            msg = SystemMessage(description: "\(peerId.displayName) has joined!")
+        case .notConnected:
+            msg = SystemMessage(description: "\(peerId.displayName) has logged out!")
+        default:
+            msg = nil
+            print("Peer is connected...")
+        }
+        
+        guard let message = msg else { return }
+        store(message)
+        updateMessages()
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         guard let incoming = String(bytes: data, encoding: .utf8) else { return }
-        let message = Message(incoming: incoming)
+        let message = TextMessage(incoming: incoming)
         store(message)
         updateMessages()
     }
@@ -115,7 +130,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         }
     }
     
-    private func post(_ msg: Message) {
+    private func post(_ msg: TextMessage) {
         guard let data = msg.content.data(using: .utf8), session.connectedPeers.count > 0 else { return }
         
         do { try session.send(data, toPeers: session.connectedPeers, with: .reliable) }
