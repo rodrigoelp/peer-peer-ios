@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/rod/dev/ios/samples/pp/src/peerMessages/Models.swift">
+   </FileRef>
+   <FileRef
       location = "group:../../README.md">
    </FileRef>
    <FileRef
