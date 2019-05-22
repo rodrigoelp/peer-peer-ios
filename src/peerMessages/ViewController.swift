@@ -1,7 +1,9 @@
 import UIKit
 import MultipeerConnectivity
 
-class ViewController: UIViewController, MCSessionDelegate {
+class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate {
+    private let serviceType = "peer-txtmsg"
+    
     @IBOutlet weak var startHostButton: UIButton!
     @IBOutlet weak var joinHostButton: UIButton!
     @IBOutlet weak var messageText: UITextField!
@@ -10,7 +12,7 @@ class ViewController: UIViewController, MCSessionDelegate {
     
     var peerId: MCPeerID!
     var session: MCSession!
-    var advertiser: MCAdvertiserAssistant!
+    var advertiser: MCAdvertiserAssistant?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,9 +23,18 @@ class ViewController: UIViewController, MCSessionDelegate {
     }
     
     @IBAction func startHost(_ sender: Any) {
+        advertiser?.stop() // just in case you have started one before.
+        
+        advertiser = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: .none, session: session)
+        advertiser?.start()
     }
     
     @IBAction func joinHost(_ sender: Any) {
+        advertiser?.stop() // just in case you started a host and now want to join a session.
+
+        let browser = MCBrowserViewController(serviceType: serviceType, session: session)
+        browser.delegate = self
+        present(browser, animated: true)
     }
     
     @IBAction func sendMessage(_ sender: Any) {
@@ -42,6 +53,14 @@ class ViewController: UIViewController, MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
+    }
+    
+    func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
+        dismiss(animated: true)
+    }
+    
+    func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
+        dismiss(animated: true)
     }
     
     private func setInitialUIState() {
