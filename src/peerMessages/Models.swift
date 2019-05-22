@@ -9,10 +9,12 @@ struct Message {
     let time: Date
     let content: String
     let direction: MessageDirection
+    private let dateFormatter = DateFormatter()
     
     var description: String { get {
         let prefix = direction == .incoming ? "🔻" : "🔺"
-        return "\(prefix) [\(self.time)]: \(self.content)"
+        let printedDate = self.dateFormatter.string(from: self.time)
+        return "\(prefix) [\(printedDate)]: \(self.content)"
         }
     }
     
@@ -20,6 +22,8 @@ struct Message {
         self.time = time
         self.content = content
         self.direction = direction
+        
+        dateFormatter.dateFormat = "HH:mm:ss"
     }
     
     init(incoming: String) {

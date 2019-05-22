@@ -40,7 +40,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     }
     
     @IBAction func sendMessage(_ sender: Any) {
-        guard let message = messageText.text, message.isEmpty else {
+        guard let message = messageText.text, !message.isEmpty else {
             return
         }
         let msg = Message(outgoing: message)
@@ -54,15 +54,25 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+        guard let incoming = String(bytes: data, encoding: .utf8) else { return }
+        let message = Message(incoming: incoming)
+        store(message)
+        updateMessages()
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
+        // not going to be using this one.
+        assertionFailure("This should not be called.")
     }
     
     func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
+        // not going to be using this one.
+        assertionFailure("This should not be called.")
     }
     
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
+        // not going to be using this one.
+        assertionFailure("This should not be called.")
     }
     
     func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
@@ -99,7 +109,10 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     }
     
     private func updateMessages() {
-        messagesLog.text = msgStorage.map({ $0.description }).joined(separator: "\n\n")
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.messagesLog.text = self.msgStorage.map({ $0.description }).joined(separator: "\n\n")
+        }
     }
     
     private func post(_ msg: Message) {
