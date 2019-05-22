@@ -14,6 +14,8 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var session: MCSession!
     var advertiser: MCAdvertiserAssistant?
     
+    var msgStorage = [Message]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -38,9 +40,17 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     }
     
     @IBAction func sendMessage(_ sender: Any) {
+        guard let message = messageText.text, message.isEmpty else {
+            return
+        }
+        let msg = Message(outgoing: message)
+        store(msg)
+        post(msg)
+        updateMessages()
     }
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+        enableMessageControls(session.connectedPeers.count > 0)
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
@@ -65,8 +75,15 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     
     private func setInitialUIState() {
         messagesLog.text = ""
-        messageText.isEnabled = false
-        sendMessageButton.isEnabled = false
+        enableMessageControls(false)
+    }
+    
+    private func enableMessageControls(_ enabled: Bool = true) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.messageText.isEnabled = enabled
+            self.sendMessageButton.isEnabled = enabled
+        }
     }
     
     private func prepareSession() {
@@ -75,5 +92,23 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
         // then we prepare a session to be used and listen to events.
         session = MCSession(peer: peerId, securityIdentity: .none, encryptionPreference: .required)
         session.delegate = self
+    }
+    
+    private func store(_ msg: Message) {
+        msgStorage.append(msg)
+    }
+    
+    private func updateMessages() {
+        messagesLog.text = msgStorage.map({ $0.description }).joined(separator: "\n\n")
+    }
+    
+    private func post(_ msg: Message) {
+        guard let data = msg.content.data(using: .utf8), session.connectedPeers.count > 0 else { return }
+        
+        do { try session.send(data, toPeers: session.connectedPeers, with: .reliable) }
+        catch let e as NSError {
+            // needs to display the error... will display it later as an alert of sorts.
+            print("ERROR: \(e.localizedDescription)")
+        }
     }
 }
