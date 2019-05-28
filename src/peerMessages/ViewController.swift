@@ -1,7 +1,7 @@
 import UIKit
 import MultipeerConnectivity
 
-class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate {
+class ViewController: UIViewController, CoordinatedViewController, MCSessionDelegate, MCBrowserViewControllerDelegate {
     private let serviceType = "peer-txtmsg"
     
     @IBOutlet weak var startHostButton: UIButton!
@@ -15,6 +15,7 @@ class ViewController: UIViewController, MCSessionDelegate, MCBrowserViewControll
     var advertiser: MCAdvertiserAssistant?
     
     var msgStorage = [Message]()
+    var coordinator: Coordinator?
     
     override func viewDidLoad() {
         super.viewDidLoad()

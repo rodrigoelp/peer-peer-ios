@@ -13,6 +13,7 @@
 		DC410AB02294D7EC00AAD8B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC410AAF2294D7EC00AAD8B0 /* Assets.xcassets */; };
 		DC410AB32294D7EC00AAD8B0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC410AB12294D7EC00AAD8B0 /* LaunchScreen.storyboard */; };
 		DC410ABB2294DCDA00AAD8B0 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC410ABA2294DCD900AAD8B0 /* Models.swift */; };
+		DCC21955229CBF6500BEE048 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC21954229CBF6500BEE048 /* Coordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		DC410AB22294D7EC00AAD8B0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DC410AB42294D7EC00AAD8B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC410ABA2294DCD900AAD8B0 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Models.swift; path = /Users/rod/dev/ios/samples/pp/src/peerMessages/Models.swift; sourceTree = "<absolute>"; };
+		DCC21954229CBF6500BEE048 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 				DC410AAF2294D7EC00AAD8B0 /* Assets.xcassets */,
 				DC410AB12294D7EC00AAD8B0 /* LaunchScreen.storyboard */,
 				DC410AB42294D7EC00AAD8B0 /* Info.plist */,
+				DCC21954229CBF6500BEE048 /* Coordinator.swift */,
 			);
 			path = peerMessages;
 			sourceTree = "<group>";
@@ -138,6 +141,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCC21955229CBF6500BEE048 /* Coordinator.swift in Sources */,
 				DC410ABB2294DCDA00AAD8B0 /* Models.swift in Sources */,
 				DC410AAB2294D7EB00AAD8B0 /* ViewController.swift in Sources */,
 				DC410AA92294D7EB00AAD8B0 /* AppDelegate.swift in Sources */,
